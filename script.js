@@ -1,3 +1,6 @@
+const squares = document.querySelectorAll(".square");
+const victory = document.querySelector(".victory");
+
 function printBoard(board) {
     console.log(board.map((row) => row.join(" | ")).join("\n---------\n"));
 }
@@ -40,22 +43,7 @@ function isVictory(board) {
 }
 
 function createPlayer(name, mark) {
-    const takeTurn = (board) => {
-        let row, col;
-        do {
-            row = Math.floor(Math.random() * 3);
-            col = Math.floor(Math.random() * 3);
-        } while (board[row][col] !== " ");
-        board[row][col] = mark;
-        console.log(
-            name + " placed a " + mark + " at " + row + ", " + col + "!",
-        );
-        printBoard(board);
-    };
-    const getName = () => {
-        return name;
-    };
-    return { name, mark, takeTurn, getName };
+    return { name, mark };
 }
 
 const TicTacToe = () => {
@@ -68,14 +56,22 @@ const TicTacToe = () => {
     const playerOne = createPlayer("Player 1", "X");
     const playerTwo = createPlayer("Player 2", "O");
     let playerOnesTurn = true;
+    let turns = 0;
 
-    const playTurn = () => {
-        if (playerOnesTurn) {
-            playerOne.takeTurn(board);
-        } else {
-            playerTwo.takeTurn(board);
-        }
-        playerOnesTurn = !playerOnesTurn;
+    const reset = () => {
+        board = [
+            [" ", " ", " "],
+            [" ", " ", " "],
+            [" ", " ", " "],
+        ];
+        turns = 0;
+        playerOnesTurn = true;
+    };
+
+    const mark = (row, col) => {
+        let m = whoseTurn().mark;
+        board[row][col] = m;
+        return m;
     };
 
     const whoseTurn = () => {
@@ -86,6 +82,10 @@ const TicTacToe = () => {
         }
     };
 
+    const locEmpty = (row, col) => {
+        return board[row][col] === " ";
+    };
+
     const whosePreviousTurn = () => {
         if (playerOnesTurn) {
             return playerTwo;
@@ -94,28 +94,55 @@ const TicTacToe = () => {
         }
     };
 
-    const playGame = () => {
-        console.log("Started game of TicTacToe!");
-        let turnNumber = 0;
-        let running = true;
-        while (running && turnNumber < 9) {
-            playTurn();
-            turnNumber += 1;
-            if (isVictory(board)) {
-                running = false;
-            }
+    const endTurn = () => {
+        turns += 1;
+        playerOnesTurn = !playerOnesTurn;
+        if (isVictory(board) || turns === 9) {
+            return true;
         }
+        return false;
+    };
+
+    const endGameMessage = () => {
         if (isVictory(board)) {
-            console.log(whosePreviousTurn().getName() + " won the game!");
-        } else if (turnNumber === 9) {
-            console.log("The game is a tie!");
+            return (
+                whosePreviousTurn().name +
+                " won the game! Hit the spacebar to restart!"
+            );
+        } else {
+            return "The game is a tie! Hit the spacebar to restart!";
         }
     };
 
-    return { playGame };
+    return { locEmpty, mark, endTurn, endGameMessage, reset };
 };
 
-//let ticTacToe = TicTacToe();
-//ticTacToe.playGame();
+let ticTacToe = TicTacToe();
+let gameEnded = false;
+let games = 0;
 
-const squares = document.querySelectorAll(".square");
+squares.forEach((el, index) => {
+    let row = Math.floor(index / 3);
+    let col = index % 3;
+    el.addEventListener("click", () => {
+        if (ticTacToe.locEmpty(row, col) && !gameEnded) {
+            el.innerText = ticTacToe.mark(row, col);
+            gameEnded = ticTacToe.endTurn();
+            if (gameEnded) {
+                victory.innerText = ticTacToe.endGameMessage();
+                games += 1;
+            }
+        }
+    });
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+        squares.forEach((el) => {
+            el.innerText = "";
+        });
+        ticTacToe.reset();
+        victory.innerText = "You've played " + games + " games!";
+        gameEnded = false;
+    }
+});
