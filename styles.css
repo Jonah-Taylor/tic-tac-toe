@@ -1,1 +1,45 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
 
+.title {
+    padding: 20px;
+    font-size: 40px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 10vh;
+    align-items: center;
+}
+
+.grid {
+    width: 30vw;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 1vw;
+    background-color: black;
+}
+
+.square {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7vw;
+    user-select: none;
+}
+
+.square:hover {
+    background-color: #dddddd;
+}
+
+.square:active {
+    background-color: #aaaaaa;
+}

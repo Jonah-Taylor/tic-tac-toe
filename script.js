@@ -115,5 +115,7 @@ const TicTacToe = () => {
     return { playGame };
 };
 
-let ticTacToe = TicTacToe();
-ticTacToe.playGame();
+//let ticTacToe = TicTacToe();
+//ticTacToe.playGame();
+
+const squares = document.querySelectorAll(".square");
