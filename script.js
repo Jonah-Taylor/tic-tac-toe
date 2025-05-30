@@ -53,8 +53,8 @@ const TicTacToe = () => {
         [" ", " ", " "],
     ];
 
-    const playerOne = createPlayer("Player 1", "X");
-    const playerTwo = createPlayer("Player 2", "O");
+    const playerOne = createPlayer("Player X", "X");
+    const playerTwo = createPlayer("Player O", "O");
     let playerOnesTurn = true;
     let turns = 0;
 
